@@ -214,7 +214,6 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
       if (window.navigator.vibrate) {
         window.navigator.vibrate(50);
       }
-
       // Scroll before starting the search
       scrollToTop();
       
@@ -255,7 +254,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
     } finally {
       setIsLoading(false);
     }
-  });
+  }, [ onError, userContext, scrollToTop]);
 
   const handleRelatedQueryClick = useCallback((query: string) => {
     // Scroll before handling the click

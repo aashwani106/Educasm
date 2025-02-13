@@ -44,9 +44,8 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [nextQuestionTimer, setNextQuestionTimer] = useState<ReturnType<
-    typeof setTimeout
-  > | null>(null);
+  const [nextQuestionTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+
   const [currentQuestionTime, setCurrentQuestionTime] = useState<number>(0);
   const [timerInterval, setTimerInterval] = useState<ReturnType<
     typeof setInterval
