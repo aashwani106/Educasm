@@ -14,7 +14,8 @@ const transformQuestion = (rawQuestion: Question): Question => ({
   questionType: rawQuestion.questionType || "conceptual"
 });
 
-const apiUrl = 'http://localhost:3003'
+// const apiUrl = 'http://localhost:3003'
+const apiUrl = 'https://educasm-backend.onrender.com'
 
 export const api = {
  
@@ -28,22 +29,34 @@ export const api = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic, level, userContext }),
       });
-  
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-  
+       console.log('API getQuestion response:', response);
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Server error: ${response.statusText}, Response: ${errorText}`);
       }
   
       const resp = await response.json();
-      console.log("Full API response:", resp);
-  
-      return transformQuestion(resp.data);
+
+      console.log("Rate limit reached", resp);
+
+    
+        if (resp.limitReached) {
+          console.log("Rate limit reached", resp);
+         throw new Error("Rate limit reached");
+
+          // showLimitMessage(resp.message); // Call function to show popup
+        }else{
+          return transformQuestion(resp.data);
+
+        }
     } catch (error) {
-      console.error("Question generation error:", error);
-      throw new Error("Failed to generate question");
+      console.error("Question generation error:-",error  );
+     if(error == "Error: Rate limit reached"){
+      throw new Error("Rate limit reached");
+     }else{
+       throw new Error("Failed to generate question");
+     }
     }
   },
   
@@ -93,11 +106,6 @@ export const api = {
       const resp = await response.json();
       console.log('API getQuestion response:', resp);
 
-
-      
-      // const response2 = await gptService.getExploreContent(query, userContext);
-      // console.log('API getQuestion response---:', response2);
-
       return resp.data;
     } catch (error) {
       console.error("Explore error:", error);
@@ -110,12 +118,17 @@ export const api = {
     userContext: UserContext,
     onChunk: (content: { text?: string; topics?: any[]; questions?: any[] }) => void
   ) {
+    console.log('hrere  ')
     const response = await fetch( apiUrl + "/api/gpt/streamExploreContent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, userContext }),
     });
-  
+    console.log('hrere 2' , response)
+   if(response.status == 203){
+    return 'limit reached'
+   }
+
     if (!response.body) {
       console.error("Response body is empty");
       return;

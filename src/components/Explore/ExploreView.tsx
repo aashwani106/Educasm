@@ -226,7 +226,8 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
 
       setShowInitialSearch(false);
 
-      await api.streamExploreContent(
+
+      const  resp =   await api.streamExploreContent(
         query,
         userContext,
         (chunk: StreamChunk) => {
@@ -241,6 +242,13 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
           ]);
         }
       );
+
+      if(resp == 'limit reached'){
+        console.log('Limit Reached');
+        onError("Limit Reached Please Try again Letter");
+      }
+
+
     } catch (error) {
       console.error('Search error:', error);
       onError(error instanceof Error ? error.message : 'Failed to load content');

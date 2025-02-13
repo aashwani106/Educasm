@@ -14,7 +14,9 @@ export const useApi = () => {
     try {
       setIsLoading(true);
       return await api.getQuestion(topic, level, userContext);
+      
     } catch (error) {
+      console.log("API Error:", error);
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
       throw new Error(errorMessage);

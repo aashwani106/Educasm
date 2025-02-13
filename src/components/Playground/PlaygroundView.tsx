@@ -35,6 +35,8 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
   onSuccess,
   userContext
 }) => {
+
+
   const { getQuestion } = useApi();
   const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [query, setQuery] = useState(initialQuery || "");
@@ -130,7 +132,11 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
       setPreloadedQuestion(question);
     } catch (error) {
       console.error("Error fetching question:", error);
-      onError("Failed to generate question. Please try again.");
+      if (error == "Error: Rate limit reached") {
+        onError("Limit Reached. Please try again. Letter");
+      } else {
+        onError("Failed to generate question. Please try again.");
+      }
     }
   };
 
@@ -144,6 +150,7 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
 
       // Load first question immediately
       const firstQuestion = await getQuestion(newQuery, 1, userContext);
+      console.log('First question loaded:', firstQuestion); // Debug log
       setCurrentQuestion(firstQuestion);
       setSelectedAnswer(null);
       setCurrentQuestionTime(0); // Reset timer
